@@ -1,5 +1,5 @@
 //TODO: STEP 1 - Import the useState hook.
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import BottomRow from "./BottomRow";
 
@@ -7,6 +7,29 @@ function App() {
   //TODO: STEP 2 - Establish your applictaion's state with some useState hooks.  You'll need one for the home score and another for the away score.
   let [homeScore, setHomeScore] = useState(0);
   let [awayScore, setAwayScore] = useState(0);
+  let [time, setTime] = useState(0);
+  let [isActive, setIsActive] = useState(false);
+
+  function toggleTimer() {
+    setIsActive(!isActive);
+  }
+
+  function resetTimer() {
+    setTime(0);
+    setIsActive(false);
+  }
+
+  useEffect(() => {
+    let interval = null;
+    if (isActive) {
+      interval = setInterval(() => {
+        setTime(time + 1);
+      }, 1000);
+    } else if (!isActive && time !== 0) {
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  });
 
   return (
     <div className="container">
@@ -19,7 +42,7 @@ function App() {
 
             <div className="home__score">{homeScore}</div>
           </div>
-          <div className="timer">00:03</div>
+          <div className="timer">{time}</div>
           <div className="away">
             <h2 className="away__name">Tigers</h2>
             <div className="away__score">{awayScore}</div>
@@ -58,6 +81,12 @@ function App() {
           </button>
         </div>
       </section>
+      <button className="timerButton" onClick={toggleTimer}>
+        {isActive ? "Pause Time" : "Start Time"}
+      </button>
+      <button className="resetButton" onClick={resetTimer}>
+        Reset Time
+      </button>
     </div>
   );
 }
