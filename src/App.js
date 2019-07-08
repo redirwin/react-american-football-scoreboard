@@ -81,12 +81,14 @@ function App() {
           </button>
         </div>
       </section>
-      <button className="timerButton" onClick={toggleTimer}>
-        {isActive ? "Pause Time" : "Start Time"}
-      </button>
-      <button className="resetButton" onClick={resetTimer}>
-        Reset Time
-      </button>
+      <section className="timerButtons">
+        <button className="startButton" onClick={toggleTimer}>
+          {isActive ? "Pause Time" : "Start Time"}
+        </button>
+        <button className="resetButton" onClick={resetTimer}>
+          Reset Time
+        </button>
+      </section>
     </div>
   );
 }
