@@ -1,10 +1,41 @@
 //TODO: STEP 1 - Import the useState hook.
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import BottomRow from "./BottomRow";
 
 function App() {
   //TODO: STEP 2 - Establish your applictaion's state with some useState hooks.  You'll need one for the home score and another for the away score.
+  let [homeScore, setHomeScore] = useState(0);
+  let [awayScore, setAwayScore] = useState(0);
+  let [time, setTime] = useState(0);
+  let [isActive, setIsActive] = useState(false);
+
+  function toggleTimer() {
+    setIsActive(!isActive);
+  }
+
+  function resetTimer() {
+    setTime(0);
+    setIsActive(false);
+  }
+
+  useEffect(() => {
+    let interval = null;
+    if (isActive) {
+      interval = setInterval(() => {
+        setTime(time + 1);
+      }, 1000);
+    } else if (!isActive && time !== 0) {
+      clearInterval(interval);
+    }
+    return () => clearInterval(interval);
+  });
+
+  function increaseScore(team, points) {
+    team === "home"
+      ? setHomeScore(homeScore + points)
+      : setAwayScore(awayScore + points);
+  }
 
   return (
     <div className="container">
@@ -15,12 +46,12 @@ function App() {
 
             {/* TODO STEP 3 - We need to change the hardcoded values in these divs to accept dynamic values from our state. */}
 
-            <div className="home__score">32</div>
+            <div className="home__score">{homeScore}</div>
           </div>
-          <div className="timer">00:03</div>
+          <div className="timer">{time}</div>
           <div className="away">
             <h2 className="away__name">Tigers</h2>
-            <div className="away__score">32</div>
+            <div className="away__score">{awayScore}</div>
           </div>
         </div>
         <BottomRow />
@@ -28,13 +59,49 @@ function App() {
       <section className="buttons">
         <div className="homeButtons">
           {/* TODO STEP 4 - Now we need to attach our state setter functions to click listeners. */}
-          <button className="homeButtons__touchdown">Home Touchdown</button>
-          <button className="homeButtons__fieldGoal">Home Field Goal</button>
+          <button
+            className="homeButtons__touchdown"
+            onClick={() => {
+              increaseScore("home", 7);
+            }}
+          >
+            Home Touchdown
+          </button>
+          <button
+            className="homeButtons__fieldGoal"
+            onClick={() => {
+              increaseScore("home", 3);
+            }}
+          >
+            Home Field Goal
+          </button>
         </div>
         <div className="awayButtons">
-          <button className="awayButtons__touchdown">Away Touchdown</button>
-          <button className="awayButtons__fieldGoal">Away Field Goal</button>
+          <button
+            className="awayButtons__touchdown"
+            onClick={() => {
+              increaseScore("away", 7);
+            }}
+          >
+            Away Touchdown
+          </button>
+          <button
+            className="awayButtons__fieldGoal"
+            onClick={() => {
+              increaseScore("away", 3);
+            }}
+          >
+            Away Field Goal
+          </button>
         </div>
+      </section>
+      <section className="timerButtons">
+        <button className="startButton" onClick={toggleTimer}>
+          {isActive ? "Pause Time" : "Start Time"}
+        </button>
+        <button className="resetButton" onClick={resetTimer}>
+          Reset Time
+        </button>
       </section>
     </div>
   );
